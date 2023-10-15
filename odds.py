@@ -7,7 +7,7 @@ import os
 import uvicorn
 
 # Load environment variables from the .env file
-load_dotenv()
+# load_dotenv()
 
 app = FastAPI(
     title="Sports Odds API",
