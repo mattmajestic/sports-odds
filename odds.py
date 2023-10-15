@@ -39,8 +39,11 @@ app = FastAPI(
     ),
 )
 
-@app.get("/")
+@app.get("/", summary="Get Sports Data")
 async def get_sports():
+    """
+    Retrieve sports data from the Odds API.
+    """
     api_key = os.getenv('ODDS_API_KEY')
     base_url = "https://api.the-odds-api.com/v4/sports/"
     params = {"apiKey": api_key}
@@ -52,5 +55,5 @@ async def get_sports():
     else:
         return {"error": "Failed to fetch data from the Odds API"}
 
-if __name__ == "__main__":
+if __name__ == "__odds__":
     uvicorn.run(app, host="0.0.0.0", port=8885)
