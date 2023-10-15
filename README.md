@@ -1,7 +1,7 @@
-FastAPI Odds API 🎲
+# FastAPI Odds API 🎲
 Explore sports data from the Odds API using this FastAPI application! 🏀⚽️
 
-Overview
+## Overview
 This FastAPI application allows you to fetch sports data from the Odds API and view it seamlessly. It uses environment variables to keep your API key secure. Dive into the world of sports data with FastAPI! 🌍
 
 ## Subscribe and Stay Tuned! 🎉
