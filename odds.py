@@ -66,15 +66,14 @@ async def get_sports():
 
 @app.get("/v4/sports/soccer_epl/odds")
 async def get_epl_odds(
-    apiKey: str,
-    regions: str
+    regions: str = "us"
 ):
     """
     Returns a list of upcoming and live games with recent odds for the English Premier League, region and market.
     """
     base_url = "https://api.the-odds-api.com/v4/sports/soccer_epl/odds"
     params = {
-        "apiKey": apiKey,
+        "apiKey": os.getenv('ODDS_API_KEY'),
         "regions": regions
     }
 
