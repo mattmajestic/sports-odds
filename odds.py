@@ -123,7 +123,7 @@ async def get_epl_odds():
 
     return prices
 
-@app.get("/soccer/epl/calcs")
+@app.get("/soccer/epl/chart")
 async def get_calcs():
     # Query the other route to get the data
     data = await get_epl_odds()
