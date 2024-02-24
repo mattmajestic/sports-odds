@@ -131,10 +131,13 @@ async def get_calcs():
     # Convert the data to a pandas DataFrame
     df = pd.DataFrame(data)
 
+    # Group the data by the bookmaker and calculate the average price difference
+    grouped = df.groupby('bookmaker')['price_diff'].mean().reset_index()
+
     # Generate a plot
     plt.figure(figsize=(10, 6))
-    df.set_index('bookmaker')['price_diff'].plot(kind='bar')
-    plt.ylabel('Price Difference')
+    grouped.set_index('bookmaker')['price_diff'].plot(kind='bar')
+    plt.ylabel('Average Price Difference')
 
     # Save the plot to a BytesIO object
     img = io.BytesIO()
