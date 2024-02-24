@@ -64,5 +64,26 @@ async def get_sports():
     else:
         return {"error": "Failed to fetch data from the Odds API"}
 
+@app.get("/v4/sports/soccer_epl/odds")
+async def get_epl_odds(
+    apiKey: str,
+    regions: str
+):
+    """
+    Returns a list of upcoming and live games with recent odds for the English Premier League, region and market.
+    """
+    base_url = "https://api.the-odds-api.com/v4/sports/soccer_epl/odds"
+    params = {
+        "apiKey": apiKey,
+        "regions": regions
+    }
+
+    response = requests.get(base_url, params=params)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": "Failed to fetch data from the Odds API"}
+
 if __name__ == "__odds__":
     uvicorn.run(app, host="0.0.0.0", port=8885)
