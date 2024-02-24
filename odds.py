@@ -12,6 +12,7 @@ import urllib
 import base64
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.graph_objects as go
 
 
 # Load environment variables from the .env file
@@ -131,23 +132,23 @@ async def get_calcs():
     # Convert the data to a pandas DataFrame
     df = pd.DataFrame(data)
 
-    # Group the data by the bookmaker and calculate the average price difference
-    grouped = df.groupby('bookmaker')['price_diff'].mean().reset_index()
+    # Group the data by the bookmaker and calculate the average and sum of price differences
+    grouped = df.groupby('bookmaker')['price_diff'].agg(['mean', 'sum']).reset_index()
 
-    # Generate a plot
-    plt.figure(figsize=(10, 6))
-    grouped.set_index('bookmaker')['price_diff'].plot(kind='bar')
-    plt.ylabel('Average Price Difference')
+    # Sort the data from highest to lowest average price difference
+    grouped = grouped.sort_values('mean', ascending=False)
 
-    # Save the plot to a BytesIO object
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
+    # Create a Plotly chart
+    fig = go.Figure(data=[
+        go.Bar(name='Average', x=grouped['bookmaker'], y=grouped['mean']),
+        go.Bar(name='Total', x=grouped['bookmaker'], y=grouped['sum'])
+    ])
 
-    # Encode the image in base64 and create the HTML response
-    plot_url = urllib.parse.quote(base64.b64encode(img.read()).decode())
-    html = '<img src="data:image/png;base64,{}">'.format(plot_url)
+    # Change the bar mode
+    fig.update_layout(barmode='group')
 
+    # Convert the Plotly chart to HTML and return it
+    html = fig.to_html(full_html=False)
     return HTMLResponse(content=html)
 
 if __name__ == "__odds__":
