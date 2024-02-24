@@ -2,3 +2,6 @@ requests
 fastapi
 uvicorn
 python-dotenv
+matplotlib
+numpy
+pandas

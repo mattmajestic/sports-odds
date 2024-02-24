@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.openapi.models import Info
 from fastapi.openapi.models import ExternalDocumentation
 from fastapi.responses import RedirectResponse
@@ -6,6 +6,13 @@ import requests
 from dotenv import load_dotenv
 import os
 import uvicorn
+import numpy as np
+import io
+import urllib
+import base64
+import matplotlib.pyplot as plt
+import pandas as pd
+
 
 # Load environment variables from the .env file
 # load_dotenv()
@@ -115,6 +122,30 @@ async def get_epl_odds():
                     })
 
     return prices
+
+@app.get("/soccer/epl/calcs", response_class=Response, media_type='text/html')
+async def get_calcs():
+    # Query the other route to get the data
+    data = await get_epl_odds()
+
+    # Convert the data to a pandas DataFrame
+    df = pd.DataFrame(data)
+
+    # Generate a plot
+    plt.figure(figsize=(10, 6))
+    df.set_index('bookmaker')['price_diff'].plot(kind='bar')
+    plt.ylabel('Price Difference')
+
+    # Save the plot to a BytesIO object
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+
+    # Encode the image in base64 and create the HTML response
+    plot_url = urllib.parse.quote(base64.b64encode(img.read()).decode())
+    html = '<img src="data:image/png;base64,{}">'.format(plot_url)
+
+    return html
 
 if __name__ == "__odds__":
     uvicorn.run(app, host="0.0.0.0", port=8885)
