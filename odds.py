@@ -84,5 +84,37 @@ async def get_epl_odds(
     else:
         return {"error": "Failed to fetch data from the Odds API"}
 
+@app.get("/soccer/epl/calcs")
+async def get_epl_odds():
+    base_url = "https://api.the-odds-api.com/v4/sports/soccer_epl/odds"
+    params = {
+        "apiKey": os.getenv('ODDS_API_KEY'),
+        "regions": "us"
+    }
+
+    response = requests.get(base_url, params=params)
+
+    if response.status_code != 200:
+        return {"error": "Failed to fetch data from the Odds API"}
+
+    data = response.json()
+
+    prices = []
+    for item in data:
+        for bookmaker in item['bookmakers']:
+            for market in bookmaker['markets']:
+                if len(market['outcomes']) >= 2:
+                    price_diff = abs(market['outcomes'][0]['price'] - market['outcomes'][1]['price'])
+                    prices.append({
+                        "bookmaker": bookmaker['key'],
+                        "team1": market['outcomes'][0]['name'],
+                        "price1": market['outcomes'][0]['price'],
+                        "team2": market['outcomes'][1]['name'],
+                        "price2": market['outcomes'][1]['price'],
+                        "price_diff": price_diff
+                    })
+
+    return prices
+
 if __name__ == "__odds__":
     uvicorn.run(app, host="0.0.0.0", port=8885)
