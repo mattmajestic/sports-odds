@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response
 from fastapi.openapi.models import Info
 from fastapi.openapi.models import ExternalDocumentation
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 import requests
 from dotenv import load_dotenv
 import os
@@ -123,7 +123,7 @@ async def get_epl_odds():
 
     return prices
 
-@app.get("/soccer/epl/calcs", response_class=Response, media_type='text/html')
+@app.get("/soccer/epl/calcs")
 async def get_calcs():
     # Query the other route to get the data
     data = await get_epl_odds()
@@ -145,7 +145,7 @@ async def get_calcs():
     plot_url = urllib.parse.quote(base64.b64encode(img.read()).decode())
     html = '<img src="data:image/png;base64,{}">'.format(plot_url)
 
-    return html
+    return HTMLResponse(content=html)
 
 if __name__ == "__odds__":
     uvicorn.run(app, host="0.0.0.0", port=8885)
