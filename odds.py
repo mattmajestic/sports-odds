@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.models import Info
 from fastapi.openapi.models import ExternalDocumentation
+from fastapi.responses import RedirectResponse
 import requests
 from dotenv import load_dotenv
 import os
@@ -39,7 +40,15 @@ app = FastAPI(
     ),
 )
 
-@app.get("/", summary="Get Sports Data")
+@app.get("/", include_in_schema=False)
+async def redirect_to_docs():
+    """
+    Redirect to the documentation.
+    """
+    response = RedirectResponse(url='/docs')
+    return response
+
+@app.get("/sports", summary="Get Sports Data")
 async def get_sports():
     """
     Retrieve sports data from the Odds API.
