@@ -51,7 +51,7 @@ async def redirect_to_docs():
 @app.get("/sports", summary="Get Sports Data")
 async def get_sports():
     """
-    Retrieve sports data from the Odds API.
+    Retrieve sports data available from the Odds API.
     """
     api_key = os.getenv('ODDS_API_KEY')
     base_url = "https://api.the-odds-api.com/v4/sports/"
@@ -64,7 +64,7 @@ async def get_sports():
     else:
         return {"error": "Failed to fetch data from the Odds API"}
 
-@app.get("/v4/sports/soccer_epl/odds")
+@app.get("/soccer/epl/odds")
 async def get_epl_odds(
     regions: str = "us"
 ):
