@@ -139,13 +139,23 @@ async def get_calcs():
     grouped = grouped.sort_values('mean', ascending=False)
 
     # Create a Plotly chart
-    fig = go.Figure(data=[
-        go.Bar(name='Average', x=grouped['bookmaker'], y=grouped['mean']),
-        go.Bar(name='Total', x=grouped['bookmaker'], y=grouped['sum'])
-    ])
+    fig = go.Figure()
 
-    # Change the bar mode
-    fig.update_layout(barmode='group')
+    # Add a bar chart for the average price difference
+    fig.add_trace(go.Bar(name='Average', x=grouped['bookmaker'], y=grouped['mean']))
+
+    # Add a line chart for the total price difference with a second y-axis
+    fig.add_trace(go.Scatter(name='Total', x=grouped['bookmaker'], y=grouped['sum'], yaxis='y2'))
+
+    # Update the layout to include the second y-axis
+    fig.update_layout(
+        yaxis2=dict(
+            title='Total',
+            overlaying='y',
+            side='right'
+        ),
+        barmode='group'
+    )
 
     # Convert the Plotly chart to HTML and return it
     html = fig.to_html(full_html=False)
